@@ -30,7 +30,7 @@ class PlayerBar:
 			raise Exception("new_movement value must be -1 <= new_movement <= 1")
 		self._movement = new_movement
 	movement = property(get_movement, set_movement)
-	def move(self):
+	def update_pos(self):
 		"""Moves a player's bar if needed."""
 		if self.movement == MOVING_UP:
 			self.rect.y += -BAR_VSPEED
@@ -40,6 +40,6 @@ class PlayerBar:
 			self.rect.y += BAR_VSPEED
 			if self.rect.bottom > self.screen.get_height():
 				self.rect.bottom = self.screen.get_height()
-	def update(self):
+	def render(self):
 		"""Re-draws the player's bar on self.screen."""
 		pygame.draw.rect(self.screen, BAR_COLOR, self.rect)
