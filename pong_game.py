@@ -6,6 +6,9 @@ MAX_FPS = 60
 SCREEN_BACKGROUND = pygame.Color("#cccccc")
 MY_PLAYER = 1 # this client's player
 PLAYER_SCORED = pygame.USEREVENT
+COUNTDOWN_LENGTH = 3
+COUNTDOWN_FONT_SIZE = 75
+COUNTDOWN_FONT_COLOR = pygame.Color("#000000")
 
 class PongGame:
 	def __init__(self):
@@ -25,7 +28,22 @@ class PongGame:
 		pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN, pygame.KEYUP, PLAYER_SCORED])
 
 		# pong game runs while this is true
-		self._running = True
+		self._player_won = False
+	def do_countdown(self, length):
+		"""Does a countdown before starting a round.
+		
+		length is in seconds."""
+		countdown_length = length * 1000
+		countdown_font = pygame.font.Font(None, COUNTDOWN_FONT_SIZE)
+		while countdown_length > 0:
+			time_elapsed = self.clock.tick(MAX_FPS)
+			countdown_length -= time_elapsed
+			countdown_string = str(countdown_length / 1000 + 1)
+			self.countdown_surface = countdown_font.render(countdown_string, True, COUNTDOWN_FONT_COLOR)
+			# self.screen.blit(countdown_surface, (self.screen.get_width() / 2 - countdown_surface.get_width() / 2, 
+			self.render_objects()
+		self.countdown_surface = None
+							     #self.screen.get_height() / 2 + countdown_surface.get_height() / 2))
 	def handle_event(self, event):
 		"""Handles PyGame events during a Pong game."""
 		if event.type == pygame.KEYDOWN:
@@ -47,8 +65,10 @@ class PongGame:
 			elif event.__dict__['key'] == self.player_bars[MY_PLAYER-1].controls['down'] and self.player_bars[MY_PLAYER-1].movement == player_bar.MOVING_DOWN:
 				self.player_bars[MY_PLAYER-1].movement = player_bar.NO_MOVEMENT
 		elif event.type == PLAYER_SCORED:
-			self.game_score.add_point(event.__dict__['player'])
-			self.game_ball = ball.Ball(self.screen, player_bar.BAR_VSPEED - 5)
+			if self.game_score.add_point(event.__dict__['player']) < 1:
+				self.game_ball = ball.Ball(self.screen, player_bar.BAR_VSPEED - 5)
+			else:
+				self._player_won = event.__dict__['player']
 		elif event.type == pygame.QUIT:
 			sys.exit()
 		else:
@@ -73,7 +93,15 @@ class PongGame:
 		"""Render an updated game screen."""
 		# update objects displayed on screen
 		self.screen.fill(SCREEN_BACKGROUND)
-		self.game_ball.render()
+
+		# render ball if no countdown is currently going
+		if not self.countdown_surface:
+			self.game_ball.render()
+		else:
+			self.screen.blit(self.countdown_surface,
+					(self.screen.get_width() / 2 - self.countdown_surface.get_width() / 2,
+					self.screen.get_height() / 2 - self.countdown_surface.get_height() / 2))
+
 		self.player_bars[0].render()
 		self.player_bars[1].render()
 		self.game_score.render()
@@ -82,9 +110,12 @@ class PongGame:
 		pygame.display.flip()
 	def execute_game(self):
 		"""Main game loop."""
-		while self._running:
+		self.do_countdown(COUNTDOWN_LENGTH)
+		while not self._player_won:
 			for event in pygame.event.get():
 				self.handle_event(event)
 			self.logic_loop()
 			self.render_objects()
-		
+	def get_winner(self):
+		return self._player_won
+	winner = property(get_winner)

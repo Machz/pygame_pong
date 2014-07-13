@@ -1,5 +1,6 @@
 import pygame as pg
 import pong_game
+import results_screen
 
 # main window constants
 SCREEN_SIZE = SCREEN_WIDTH, SCREEN_HEIGHT = 640, 480
@@ -11,5 +12,9 @@ if __name__ == "__main__":
 	screen = pg.display.set_mode(SCREEN_SIZE)
 	pg.display.set_caption(WINDOW_TITLE)
 
-	pong_game = pong_game.PongGame()
-	pong_game.execute_game()
+	while True:
+		current_game = pong_game.PongGame()
+		current_game.execute_game()
+		print "Winner is Player {}".format(current_game.winner)
+		current_results = results_screen.ResultsScreen(current_game.winner)
+		current_results.display_results()
