@@ -1,0 +1,6 @@
+# python compiled scripts
+*.pyc
+# VIM swap files
+*.swp
+# personal shell script to easily launch program
+run.sh
