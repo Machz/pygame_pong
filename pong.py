@@ -1,4 +1,6 @@
 import pygame as pg
+import sys
+import start_menu
 import pong_game
 import results_screen
 
@@ -13,8 +15,14 @@ if __name__ == "__main__":
 	pg.display.set_caption(WINDOW_TITLE)
 
 	while True:
-		current_game = pong_game.PongGame()
-		current_game.execute_game()
-		print "Winner is Player {}".format(current_game.winner)
-		current_results = results_screen.ResultsScreen(current_game.winner)
-		current_results.display_results()
+		current_menu = start_menu.StartMenu()
+		current_menu.execute()
+
+		if current_menu.chosen_option == start_menu.ONE_PLAYER: # 1 player game
+			current_game = pong_game.PongGame()
+			current_game.execute_game()
+			print "Winner is Player {}".format(current_game.winner)
+			current_results = results_screen.ResultsScreen(current_game.winner)
+			current_results.display_results()
+		elif current_menu.chosen_option == start_menu.QUIT: # exit program
+			sys.exit()
