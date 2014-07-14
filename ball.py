@@ -6,6 +6,7 @@ BALL_RADIUS = 8
 BALL_COLOR = pg.Color("#000000")
 SPEED_UPDATE_DELAY = 3
 SPEED_INCREMENT = 1
+START_ANGLES = [ (1.0/24.0)*2*math.pi, (3.0/24.0)*2*math.pi, (9.0/24.0)*2*math.pi, (11.0/24.0)*2*math.pi, (13.0/24.0)*2*math.pi, (15.0/24.0)*2*math.pi, (21.0/24.0)*2*math.pi, (23.0/24.0)*2*math.pi, ]
 
 class Ball:
 	"""Pong's ball."""
@@ -19,19 +20,11 @@ class Ball:
 		# speed stuff for ball -- math time!
 		self.ball_speed = ball_start_speed
 		self.last_speed_update = 0
-		# setting initial ball angle, making sure that it's not too vertical
-		self.ball_angle = random.random() * (2 * math.pi)
-		if self.ball_angle > math.pi * (1.0/3.0) and self.ball_angle < math.pi * (2.0/3.0):
-			if self.ball_angle < math.pi / 2:
-				self.ball_angle = math.pi * (1.0/3.0) - random.random() * .5
-			else:
-				self.ball_angle = math.pi * (2.0/3.0) + random.random() * .5
-		elif self.ball_angle > (4.0/3.0) * math.pi and self.ball_angle < (5.0/3.0) * math.pi:
-			if self.ball_angle < (3.0/2.0) * math.pi:
-				self.ball_angle = (4.0/3.0) * math.pi - random.random() * .5
-			else:
-				self.ball_angle = (5.0/3.0) * math.pi + random.random() * .5
-		self.speed_vec = [ math.cos(self.ball_angle) * self.ball_speed, -math.sin(self.ball_angle) * self.ball_speed ]
+
+		# setting initial ball angle, making sure that it's not too vertical or horizontal
+		self.ball_angle = random.choice(START_ANGLES)
+
+		self.update_speed_vec()
 	def update_speed(self, time_elapsed):
 		self.last_speed_update += time_elapsed
 		if self.last_speed_update >= SPEED_UPDATE_DELAY * 1000:
