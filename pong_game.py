@@ -53,6 +53,7 @@ class PongGame:
 			pygame.display.flip()
 	def handle_event(self, event):
 		"""Handles PyGame events during a Pong game."""
+		global MY_PLAYER
 		if event.type == pygame.KEYDOWN:
 			# key pushed
 			if event.__dict__['key'] == self.player_bars[MY_PLAYER-1].controls['up']:
@@ -60,7 +61,6 @@ class PongGame:
 			elif event.__dict__['key'] == self.player_bars[MY_PLAYER-1].controls['down']:
 				self.player_bars[MY_PLAYER-1].movement = player_bar.MOVING_DOWN
 			elif event.__dict__['key'] == ord('a'):
-				global MY_PLAYER
 				if MY_PLAYER == 2:
 					MY_PLAYER = 1
 				else:

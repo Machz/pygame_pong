@@ -1,6 +1,7 @@
 import pygame as pg
 import math, random
 import pong_game
+import player_bar
 
 BALL_RADIUS = 8
 BALL_COLOR = pg.Color("#000000")
@@ -46,12 +47,18 @@ class Ball:
 			self.ball_angle = 2*math.pi - self.ball_angle
 			self.update_speed_vec()
 		for rect in bar_rects:
+			height_diff = abs(self.rect.top - rect.bottom)
+			max_height_diff = (BALL_RADIUS*2 + player_bar.BAR_HEIGHT)
 			if self.rect.right >= rect.left and self.rect.right <= rect.right and self.rect.bottom >= rect.top and self.rect.top <= rect.bottom:
-				self.ball_angle = math.pi - self.ball_angle
+				# based on ball pos relative to bar
+				self.ball_angle = math.pi + (1.0 * (self.rect.top - rect.centery) / (max_height_diff / 2.0))
+				# just bounce
+				#self.ball_angle = math.pi - self.ball_angle
 				self.update_speed_vec()
 				self.rect.right = rect.left
 			elif self.rect.left <= rect.right and self.rect.left >= rect.left and self.rect.bottom >= rect.top and self.rect.top <= rect.bottom:
-				self.ball_angle = math.pi - self.ball_angle
+				self.ball_angle = 1.0 * (rect.centery - self.rect.top) / (max_height_diff / 2.0)
+				# self.ball_angle = math.pi - self.ball_angle
 				self.update_speed_vec()
 				self.rect.left = rect.right
 	def check_scored(self):
