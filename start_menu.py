@@ -7,9 +7,8 @@ FONT_SIZE = 50
 FONT_COLOR = pygame.Color("#000000")
 BG_COLOR = pygame.Color("#CCCCCC")
 ONE_PLAYER = 0
-TWO_PLAYER = 1
-QUIT = 2
-OPTIONS = { 0: "1 Player", 1: "2 Player", 2: "Quit" }
+QUIT = 1
+OPTIONS = { 0: "1 Player", 2: "Quit" }
 
 class StartMenu:
 	"""A menu to be popped up at program start and between games."""
@@ -60,9 +59,6 @@ class StartMenu:
 				event_x = event.__dict__['pos'][0]
 				event_y = event.__dict__['pos'][1]
 				if event_x >= rect.left and event_x <= rect.right and event_y >= rect.top and event_y <= rect.bottom:
-					if i is TWO_PLAYER:
-						print "2 Player mode is not yet ready."
-						continue
 					self.chosen_option = i
 					break
 		elif event.type == pygame.QUIT:
