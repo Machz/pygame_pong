@@ -1,4 +1,5 @@
 import pygame
+import sys
 
 DISPLAY_TIME = 5
 RESULTS_FONT_SIZE = 75
@@ -30,6 +31,11 @@ class ResultsScreen:
 		pygame.display.flip()
 
 		while display_time > 0:
+			# this makes the program not stall during the results screen
+			for event in pygame.event.get():
+				self.handle_event(event)
 			time_elapsed = self.clock.tick()
 			display_time -= time_elapsed
-			
+	def handle_event(self, event):
+		if event.type == pygame.QUIT:
+			sys.exit()

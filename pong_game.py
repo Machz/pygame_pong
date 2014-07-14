@@ -19,7 +19,7 @@ class PongGame:
 		self.clock = pygame.time.Clock()
 
 		# create game objects
-		self.game_ball = ball.Ball(self.screen, player_bar.BAR_VSPEED - 5)
+		self.game_ball = ball.Ball(self.screen, player_bar.BAR_VSPEED - 2)
 		self.player_bars = [ player_bar.PlayerBar(self.screen, 1), player_bar.PlayerBar(self.screen, 2) ]
 		self.game_score = score.Score(self.screen)
 
@@ -33,17 +33,24 @@ class PongGame:
 		"""Does a countdown before starting a round.
 		
 		length is in seconds."""
+		self.render_objects()
 		countdown_length = length * 1000
 		countdown_font = pygame.font.Font(None, COUNTDOWN_FONT_SIZE)
 		while countdown_length > 0:
+			for event in pygame.event.get():
+				self.handle_event(event)
 			time_elapsed = self.clock.tick(MAX_FPS)
 			countdown_length -= time_elapsed
 			countdown_string = str(countdown_length / 1000 + 1)
-			self.countdown_surface = countdown_font.render(countdown_string, True, COUNTDOWN_FONT_COLOR)
-			# self.screen.blit(countdown_surface, (self.screen.get_width() / 2 - countdown_surface.get_width() / 2, 
-			self.render_objects()
-		self.countdown_surface = None
-							     #self.screen.get_height() / 2 + countdown_surface.get_height() / 2))
+			if countdown_string == '0': countdown_string = '1'
+			countdown_surface = countdown_font.render(countdown_string, True, COUNTDOWN_FONT_COLOR)
+			countdown_draw_area = pygame.Rect(self.screen.get_width() / 2 - countdown_surface.get_width() / 2,
+								self.screen.get_height() / 2 - countdown_surface.get_height() / 2,
+								countdown_surface.get_width(),
+								countdown_surface.get_height())
+			pygame.draw.rect(self.screen, SCREEN_BACKGROUND, countdown_draw_area)
+			self.screen.blit(countdown_surface, (countdown_draw_area.x, countdown_draw_area.y))
+			pygame.display.flip()
 	def handle_event(self, event):
 		"""Handles PyGame events during a Pong game."""
 		if event.type == pygame.KEYDOWN:
@@ -94,14 +101,7 @@ class PongGame:
 		# update objects displayed on screen
 		self.screen.fill(SCREEN_BACKGROUND)
 
-		# render ball if no countdown is currently going
-		if not self.countdown_surface:
-			self.game_ball.render()
-		else:
-			self.screen.blit(self.countdown_surface,
-					(self.screen.get_width() / 2 - self.countdown_surface.get_width() / 2,
-					self.screen.get_height() / 2 - self.countdown_surface.get_height() / 2))
-
+		self.game_ball.render()
 		self.player_bars[0].render()
 		self.player_bars[1].render()
 		self.game_score.render()
