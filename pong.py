@@ -19,7 +19,7 @@ if __name__ == "__main__":
 		current_menu.execute()
 
 		if current_menu.chosen_option == start_menu.ONE_PLAYER: # 1 player game
-			current_game = pong_game.PongGame()
+			current_game = pong_game.PongGame(1)
 			current_game.execute_game()
 			print "Winner is Player {}".format(current_game.winner)
 			current_results = results_screen.ResultsScreen(current_game.winner)

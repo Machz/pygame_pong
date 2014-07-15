@@ -11,16 +11,18 @@ MOVING_DOWN = -1
 
 class PlayerBar:
 	"""The players' bars used to hit the pong ball back and forth."""
-	def __init__(self, screen, player_num):
-		self.screen = screen
+	def __init__(self, player_num):
+		self.screen = pygame.display.get_surface()
 		self.player_num = player_num
 		self._movement = NO_MOVEMENT
-		self.controls = {'up': 273, 'down': 274}
+		if self.__class__.__name__ is "PlayerBar":
+			if player_num is 2:
+				self.controls = {'up': 273, 'down': 274}
 		# set bar's initial position
 		if self.player_num == 1:
-			self.rect = pygame.Rect(BAR_WIDTH, screen.get_height() / 2 - BAR_HEIGHT / 2, BAR_WIDTH, BAR_HEIGHT)
+			self.rect = pygame.Rect(BAR_WIDTH, self.screen.get_height() / 2 - BAR_HEIGHT / 2, BAR_WIDTH, BAR_HEIGHT)
 		elif self.player_num == 2:
-			self.rect = pygame.Rect(screen.get_width() - 2*BAR_WIDTH, screen.get_height() / 2 - BAR_HEIGHT / 2, BAR_WIDTH, BAR_HEIGHT)
+			self.rect = pygame.Rect(self.screen.get_width() - 2*BAR_WIDTH, self.screen.get_height() / 2 - BAR_HEIGHT / 2, BAR_WIDTH, BAR_HEIGHT)
 	# movement stuff
 	def get_movement(self):
 		return self._movement

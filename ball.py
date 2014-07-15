@@ -6,7 +6,7 @@ import player_bar
 BALL_RADIUS = 8
 BALL_COLOR = pg.Color("#000000")
 SPEED_UPDATE_DELAY = 3
-SPEED_INCREMENT = 1
+SPEED_INCREMENT = 2
 START_ANGLES = [ (1.0/24.0)*2*math.pi, (3.0/24.0)*2*math.pi, (9.0/24.0)*2*math.pi, (11.0/24.0)*2*math.pi, (13.0/24.0)*2*math.pi, (15.0/24.0)*2*math.pi, (21.0/24.0)*2*math.pi, (23.0/24.0)*2*math.pi, ]
 
 class Ball:
@@ -19,7 +19,7 @@ class Ball:
 		self.rect = pg.Rect(screen.get_width() / 2 - BALL_RADIUS, screen.get_height() / 2 - BALL_RADIUS, BALL_RADIUS * 2, BALL_RADIUS * 2)
 
 		# speed stuff for ball -- math time!
-		self.ball_speed = ball_start_speed
+		self.ball_speed = self.ball_start_speed = ball_start_speed
 		self.last_speed_update = 0
 
 		# setting initial ball angle, making sure that it's not too vertical or horizontal
@@ -49,16 +49,17 @@ class Ball:
 		for rect in bar_rects:
 			height_diff = abs(self.rect.top - rect.bottom)
 			max_height_diff = (BALL_RADIUS*2 + player_bar.BAR_HEIGHT)
-			if self.rect.right >= rect.left and self.rect.right <= rect.right and self.rect.bottom >= rect.top and self.rect.top <= rect.bottom:
+			next_rect = self.rect.move(*self.speed_vec)
+			if self.rect.right <= rect.left <= next_rect.right and next_rect.bottom >= rect.top and next_rect.top <= rect.bottom:
 				# based on ball pos relative to bar
 				self.ball_angle = math.pi + (1.0 * (self.rect.top - rect.centery) / (max_height_diff / 2.0))
 				# just bounce
 				#self.ball_angle = math.pi - self.ball_angle
 				self.update_speed_vec()
 				self.rect.right = rect.left
-			elif self.rect.left <= rect.right and self.rect.left >= rect.left and self.rect.bottom >= rect.top and self.rect.top <= rect.bottom:
+			elif self.rect.left >= rect.right >= next_rect.left and next_rect.bottom >= rect.top and next_rect.top <= rect.bottom:
 				self.ball_angle = 1.0 * (rect.centery - self.rect.top) / (max_height_diff / 2.0)
-				# self.ball_angle = math.pi - self.ball_angle
+				#self.ball_angle = math.pi - self.ball_angle
 				self.update_speed_vec()
 				self.rect.left = rect.right
 	def check_scored(self):
@@ -73,5 +74,7 @@ class Ball:
 			return 1
 		else:
 			return False
+	def reset(self):
+		self.__init__(self.screen, self.ball_start_speed)
 	def render(self):
 		pg.draw.circle(self.screen, BALL_COLOR, self.rect.center, BALL_RADIUS)
