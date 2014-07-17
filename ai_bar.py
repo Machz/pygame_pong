@@ -17,16 +17,13 @@ class AIBar(PlayerBar):
 	def update_pos(self):
 		# update goal_pos if past check goal
 		if self.game_ball.ball_angle > math.pi / 2 and self.game_ball.ball_angle < 3 * math.pi / 2 and self.last_angle_seen is not self.game_ball.ball_angle and self.game_ball.rect.left < self.check_goal_pos_x:
+			# calculate exactly where the ball is going to end up with current angle
 			self.last_angle_seen = self.game_ball.ball_angle
-			x_component = math.cos(self.game_ball.ball_angle) * self.game_ball.ball_speed
-			y_component = math.sin(self.game_ball.ball_angle) * self.game_ball.ball_speed
-			slope = y_component / x_component
-			final_y = slope * (self.game_ball.rect.left - self.rect.right) + self.game_ball.rect.centery
-			self.goal_pos = final_y + random.randint(-AIBar.GOAL_POS_CHANGE_RADIUS, AIBar.GOAL_POS_CHANGE_RADIUS)
+			self.goal_pos = self.game_ball.get_rect_at_x(self.rect.right).centery + random.randint(-AIBar.GOAL_POS_CHANGE_RADIUS, AIBar.GOAL_POS_CHANGE_RADIUS)
 			self.set_next_goal_check()
 
 		# move bar towards goal pos
-		if not self.goal_pos - 5 < self.rect.centery < self.goal_pos + 5:
+		if not self.goal_pos - (BAR_VSPEED / 2) <= self.rect.centery <= self.goal_pos + (BAR_VSPEED / 2):
 			if self.goal_pos > self.rect.centery:
 				self._movement = MOVING_DOWN
 			else:

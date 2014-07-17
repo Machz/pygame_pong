@@ -8,7 +8,7 @@ FONT_COLOR = pygame.Color("#000000")
 BG_COLOR = pygame.Color("#CCCCCC")
 ONE_PLAYER = 0
 QUIT = 1
-OPTIONS = { 0: "1 Player", 2: "Quit" }
+OPTIONS = { 0: "Start Game", 1: "Quit" }
 
 class StartMenu:
 	"""A menu to be popped up at program start and between games."""

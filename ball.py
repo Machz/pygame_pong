@@ -2,6 +2,7 @@ import pygame as pg
 import math, random
 import pong_game
 import player_bar
+import copy
 
 BALL_RADIUS = 8
 BALL_COLOR = pg.Color("#000000")
@@ -35,6 +36,7 @@ class Ball:
 	def update_speed_vec(self):
 		self.speed_vec = [ math.cos(self.ball_angle) * self.ball_speed, -math.sin(self.ball_angle) * self.ball_speed ]
 	def update_pos(self):
+		self.last_rect = copy.deepcopy(self.rect)
 		self.rect.move_ip(*self.speed_vec)
 	def check_collisions(self, bar_rects):
 		"""Checks if the ball has collided with the top/bottom walls or a player's bar."""
@@ -49,19 +51,34 @@ class Ball:
 		for rect in bar_rects:
 			height_diff = abs(self.rect.top - rect.bottom)
 			max_height_diff = (BALL_RADIUS*2 + player_bar.BAR_HEIGHT)
-			next_rect = self.rect.move(*self.speed_vec)
-			if self.rect.right <= rect.left <= next_rect.right and next_rect.bottom >= rect.top and next_rect.top <= rect.bottom:
-				# based on ball pos relative to bar
-				self.ball_angle = math.pi + (1.0 * (self.rect.top - rect.centery) / (max_height_diff / 2.0))
-				# just bounce
-				#self.ball_angle = math.pi - self.ball_angle
-				self.update_speed_vec()
-				self.rect.right = rect.left
-			elif self.rect.left >= rect.right >= next_rect.left and next_rect.bottom >= rect.top and next_rect.top <= rect.bottom:
-				self.ball_angle = 1.0 * (rect.centery - self.rect.top) / (max_height_diff / 2.0)
-				#self.ball_angle = math.pi - self.ball_angle
-				self.update_speed_vec()
-				self.rect.left = rect.right
+			rect_on_collision = self.get_rect_at_x(rect.left)
+			if self.last_rect.right <= rect.left <= self.rect.right:
+				rect_on_collision = self.get_rect_at_x(rect.left)
+				if rect_on_collision.bottom >= rect.top and rect_on_collision.top <= rect.bottom:
+					# based on ball pos relative to bar
+					self.ball_angle = math.pi + (1.0 * (self.rect.top - rect.centery) / (max_height_diff / 2.0))
+					# just bounce
+					#self.ball_angle = math.pi - self.ball_angle
+					self.update_speed_vec()
+					self.rect.right = rect.left
+			elif self.last_rect.left >= rect.right >= self.rect.left:
+				rect_on_collision = self.get_rect_at_x(rect.right)
+				if rect_on_collision.bottom >= rect.top and rect_on_collision.top <= rect.bottom:
+					self.ball_angle = 1.0 * (rect.centery - self.rect.top) / (max_height_diff / 2.0)
+					#self.ball_angle = math.pi - self.ball_angle
+					self.update_speed_vec()
+					self.rect.left = rect.right
+	def get_rect_at_x(self, x):
+		x_component = math.cos(self.ball_angle) * self.ball_speed
+		y_component = math.sin(self.ball_angle) * self.ball_speed
+		slope = y_component / x_component
+		if x >= self.rect.centerx:
+			final_y = slope * (x - self.rect.right) + self.rect.centery
+		else:
+			final_y = slope * (self.rect.left - x) + self.rect.centery
+		return_rect = copy.deepcopy(self.rect)
+		return_rect.center = (x, final_y)
+		return return_rect
 	def check_scored(self):
 		"""Checks if the ball has hit the left/right wall. (Meaning a player has scored.)"""
 		if self.rect.left <= 0:

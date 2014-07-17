@@ -2,7 +2,7 @@ import pygame
 import sys
 import player_bar, ai_bar, ball, score
 
-MAX_FPS = 120
+MAX_FPS = 60
 SCREEN_BACKGROUND = pygame.Color("#cccccc")
 MY_PLAYER = 2 # this client's player
 PLAYER_SCORED = pygame.USEREVENT
@@ -10,7 +10,6 @@ COUNTDOWN_LENGTH = 3
 COUNTDOWN_FONT_SIZE = 75
 COUNTDOWN_FONT_COLOR = pygame.Color("#000000")
 ONE_PLAYER_MODE = 1
-TWO_PLAYER_MODE = 2
 SCORE_TO_WIN = 3
 
 class PongGame:
@@ -18,7 +17,7 @@ class PongGame:
 		# get current surface
 		self.screen = pygame.display.get_surface()
 
-		# set game type (1 Player/2 Player)
+		# set game type
 		self.game_type = game_type
 
 		# create clock used for FPS
@@ -87,17 +86,19 @@ class PongGame:
 		# limit FPS
 		time_elapsed = self.clock.tick(MAX_FPS)
 
-		# update ball stuff 
+		# update ball speed
 		self.game_ball.update_speed(time_elapsed)
-		self.game_ball.update_pos()
-		self.game_ball.check_collisions([self.player_bars[0].rect, self.player_bars[1].rect])
 
 		# see if a player has scored
 		self.game_ball.check_scored()
 
-		# move players' bars (if needed)
+		# update positions
+		self.game_ball.update_pos()
 		self.player_bars[0].update_pos()
 		self.player_bars[1].update_pos()
+
+		# check for collisions
+		self.game_ball.check_collisions([self.player_bars[0].rect, self.player_bars[1].rect])
 	def render_objects(self):
 		"""Render an updated game screen."""
 		# update objects displayed on screen

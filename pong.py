@@ -8,7 +8,7 @@ import results_screen
 SCREEN_SIZE = SCREEN_WIDTH, SCREEN_HEIGHT = 640, 480
 WINDOW_TITLE = "Pong"
 
-if __name__ == "__main__":
+def main():
 	pg.init()
 
 	screen = pg.display.set_mode(SCREEN_SIZE)
@@ -26,3 +26,6 @@ if __name__ == "__main__":
 			current_results.display_results()
 		elif current_menu.chosen_option == start_menu.QUIT: # exit program
 			sys.exit()
+
+if __name__ == "__main__":
+	main()
