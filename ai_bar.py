@@ -2,9 +2,14 @@ import pygame, math, random
 from player_bar import *
 
 class AIBar(PlayerBar):
-	START_CHECK_POS_SCREEN = .75
-	ADD_TO_CHECK = .20
-	GOAL_POS_CHANGE_RADIUS = 50
+	# medium mode
+	#START_CHECK_POS_SCREEN = .75
+	#ADD_TO_CHECK = .20
+	#GOAL_POS_CHANGE_RADIUS = 50
+	# HARD MODE
+	START_CHECK_POS_SCREEN = 1
+	ADD_TO_CHECK = 0
+	GOAL_POS_CHANGE_RADIUS = 0
 
 	def __init__(self, player_num, game_ball):
 		PlayerBar.__init__(self, player_num)
