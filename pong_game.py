@@ -35,6 +35,7 @@ class PongGame:
 
 		# pong game runs while this is true
 		self._player_won = False
+
 	def do_countdown(self, length):
 		"""Does a countdown before starting a round.
 		
@@ -57,6 +58,7 @@ class PongGame:
 			pygame.draw.rect(self.screen, SCREEN_BACKGROUND, countdown_draw_area)
 			self.screen.blit(countdown_surface, (countdown_draw_area.x, countdown_draw_area.y))
 			pygame.display.flip()
+
 	def handle_event(self, event):
 		"""Handles PyGame events during a Pong game."""
 		global MY_PLAYER
@@ -81,6 +83,7 @@ class PongGame:
 			sys.exit()
 		else:
 			print "Event :.:.: {} = {}".format(event.type, event.__dict__)
+
 	def logic_loop(self):
 		"""Main loop logic."""
 		# limit FPS
@@ -99,6 +102,7 @@ class PongGame:
 
 		# check for collisions
 		self.game_ball.check_collisions([self.player_bars[0].rect, self.player_bars[1].rect])
+
 	def render_objects(self):
 		"""Render an updated game screen."""
 		# update objects displayed on screen
@@ -111,6 +115,7 @@ class PongGame:
 
 		# render the updated Surface
 		pygame.display.flip()
+
 	def execute_game(self):
 		"""Main game loop."""
 		self.do_countdown(COUNTDOWN_LENGTH)
@@ -119,6 +124,7 @@ class PongGame:
 				self.handle_event(event)
 			self.logic_loop()
 			self.render_objects()
+
 	def get_winner(self):
 		return self._player_won
 	winner = property(get_winner)

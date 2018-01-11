@@ -9,12 +9,13 @@ RESULTS_BG_COLOR = pygame.Color("#CCCCCC") # grey
 class ResultsScreen:
 	"""Screen to display the results of a pong game."""
 	def __init__(self, player):
+                # the results screen surface
 		self.screen = pygame.display.get_surface()
+                # the winning player
 		self.player = player
-
 		# timer for how long the results should display
 		self.clock = pygame.time.Clock()
-
+                # the font for the results
 		self.results_font = pygame.font.Font(None, RESULTS_FONT_SIZE)
 
 	def display_results(self):
@@ -36,6 +37,7 @@ class ResultsScreen:
 				self.handle_event(event)
 			time_elapsed = self.clock.tick()
 			display_time -= time_elapsed
+
 	def handle_event(self, event):
 		if event.type == pygame.QUIT:
 			sys.exit()

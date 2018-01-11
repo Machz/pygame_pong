@@ -1,6 +1,6 @@
 import pygame
 
-BAR_VSPEED = 10 # vertical speed of bars
+BAR_VSPEED = 17 # vertical speed of bars
 BAR_HEIGHT = 100
 BAR_WIDTH = 20
 BAR_COLOR = pygame.Color("#000000")
@@ -23,6 +23,7 @@ class PlayerBar:
 			self.rect = pygame.Rect(BAR_WIDTH, self.screen.get_height() / 2 - BAR_HEIGHT / 2, BAR_WIDTH, BAR_HEIGHT)
 		elif self.player_num == 2:
 			self.rect = pygame.Rect(self.screen.get_width() - 2*BAR_WIDTH, self.screen.get_height() / 2 - BAR_HEIGHT / 2, BAR_WIDTH, BAR_HEIGHT)
+
 	# movement stuff
 	def get_movement(self):
 		return self._movement
@@ -32,6 +33,7 @@ class PlayerBar:
 			raise Exception("new_movement value must be -1 <= new_movement <= 1")
 		self._movement = new_movement
 	movement = property(get_movement, set_movement)
+
 	def update_pos(self):
 		"""Moves a player's bar if needed."""
 		if self.movement == MOVING_UP:
@@ -42,6 +44,7 @@ class PlayerBar:
 			self.rect.y += BAR_VSPEED
 			if self.rect.bottom > self.screen.get_height():
 				self.rect.bottom = self.screen.get_height()
+
 	def render(self):
 		"""Re-draws the player's bar on self.screen."""
 		pygame.draw.rect(self.screen, BAR_COLOR, self.rect)

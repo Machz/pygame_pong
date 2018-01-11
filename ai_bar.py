@@ -17,8 +17,10 @@ class AIBar(PlayerBar):
 		self.last_angle_seen = None
 		self.goal_pos = self.screen.get_width() / 2
 		self.set_next_goal_check()
+
 	def set_next_goal_check(self):
 		self.check_goal_pos_x = AIBar.START_CHECK_POS_SCREEN * self.screen.get_width() - random.random() * (AIBar.ADD_TO_CHECK * self.screen.get_width())
+
 	def update_pos(self):
 		# update goal_pos if past check goal
 		if self.game_ball.ball_angle > math.pi / 2 and self.game_ball.ball_angle < 3 * math.pi / 2 and self.last_angle_seen is not self.game_ball.ball_angle and self.game_ball.rect.left < self.check_goal_pos_x:

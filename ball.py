@@ -1,18 +1,19 @@
 import pygame as pg
-import math, random
+import math
+import random
+import copy
+
 import pong_game
 import player_bar
-import copy
 
 BALL_RADIUS = 8
 BALL_COLOR = pg.Color("#000000")
 SPEED_UPDATE_DELAY = 3
-SPEED_INCREMENT = 2
+SPEED_INCREMENT = 5
 START_ANGLES = [ (1.0/24.0)*2*math.pi, (3.0/24.0)*2*math.pi, (9.0/24.0)*2*math.pi, (11.0/24.0)*2*math.pi, (13.0/24.0)*2*math.pi, (15.0/24.0)*2*math.pi, (21.0/24.0)*2*math.pi, (23.0/24.0)*2*math.pi, ]
 
 class Ball:
 	"""Pong's ball."""
-
 	def __init__(self, screen, ball_start_speed):
 		self.screen = screen
 
@@ -27,17 +28,21 @@ class Ball:
 		self.ball_angle = random.choice(START_ANGLES)
 
 		self.update_speed_vec()
+
 	def update_speed(self, time_elapsed):
 		self.last_speed_update += time_elapsed
 		if self.last_speed_update >= SPEED_UPDATE_DELAY * 1000:
 			self.ball_speed += SPEED_INCREMENT
 			self.update_speed_vec()
 			self.last_speed_update = 0
+
 	def update_speed_vec(self):
 		self.speed_vec = [ math.cos(self.ball_angle) * self.ball_speed, -math.sin(self.ball_angle) * self.ball_speed ]
+
 	def update_pos(self):
 		self.last_rect = copy.deepcopy(self.rect)
 		self.rect.move_ip(*self.speed_vec)
+
 	def check_collisions(self, bar_rects):
 		"""Checks if the ball has collided with the top/bottom walls or a player's bar."""
 		if self.rect.top < 0:
@@ -68,6 +73,7 @@ class Ball:
 					#self.ball_angle = math.pi - self.ball_angle
 					self.update_speed_vec()
 					self.rect.left = rect.right
+
 	def get_rect_at_x(self, x):
 		x_component = math.cos(self.ball_angle) * self.ball_speed
 		y_component = math.sin(self.ball_angle) * self.ball_speed
@@ -79,6 +85,7 @@ class Ball:
 		return_rect = copy.deepcopy(self.rect)
 		return_rect.center = (x, final_y)
 		return return_rect
+
 	def check_scored(self):
 		"""Checks if the ball has hit the left/right wall. (Meaning a player has scored.)"""
 		if self.rect.left <= 0:
@@ -91,7 +98,9 @@ class Ball:
 			return 1
 		else:
 			return False
+
 	def reset(self):
 		self.__init__(self.screen, self.ball_start_speed)
+
 	def render(self):
 		pg.draw.circle(self.screen, BALL_COLOR, self.rect.center, BALL_RADIUS)

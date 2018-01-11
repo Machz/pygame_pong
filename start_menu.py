@@ -21,6 +21,7 @@ class StartMenu:
 		# allow clicks and quitting the program
 		pygame.event.set_allowed(None)
 		pygame.event.set_allowed([pygame.QUIT, pygame.MOUSEBUTTONUP])
+
 	def render(self):
 		"""Display the menu."""
 		menu_font = pygame.font.Font(None, FONT_SIZE)
@@ -53,6 +54,7 @@ class StartMenu:
 			self.option_rects.append(pygame.Rect(x, y, option_surface.get_width(), option_surface.get_height()))
 
 		pygame.display.flip()
+
 	def handle_event(self, event):
 		if event.type == pygame.MOUSEBUTTONUP:
 			for i, rect in enumerate(self.option_rects):
@@ -63,6 +65,7 @@ class StartMenu:
 					break
 		elif event.type == pygame.QUIT:
 			sys.exit()
+
 	def execute(self):
 		self.render()
 		while self.chosen_option == None:
